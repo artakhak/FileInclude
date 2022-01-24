@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<EnableDefaultItems>false</EnableDefaultItems>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<Description>
+			A library to generate a file from template which can include placeholder sections that reference other file (i.e., file includes). The referenced files can include similar sections to reference other files.
+
+			The library was motivated by the need to reference other files in README.md file (other MD files, example code files, etc.).
+
+			The method GenerateFileFromTemplate in interface FileInclude.ITemplateProcessor recursively compiles the template file specified in parameter templateFilePath, and all the files directly or indirectly referenced by the template file into a single file and returns the file contents in output parameter generatedFileContents.
+
+			The default implementation of FileInclude.ITemplateProcessor is FileInclude.TemplateProcessor and it uses IncludedFilePlaceHolder element tag to locate the include place-holders. However the tag name can be changed by overriding the virtual property TemplateProcessor.FileIncludeTagName.
+
+			The method FileInclude.ITemplateProcessor.GenerateFileFromTemplate returns errors as a list of FileInclude.IErrorData objects that contain error details.
+
+			Also, the method checks and reports any possible circular references, to prevent infinite processing.
+
+			There is also an extension method FileInclude.TemplateProcessorExtensions.GenerateFileFromTemplateAndSave which saves the file generated from the template. The extension method checks if the generated file was modified by other applications (say manually edited) since it was auto-generated last time, to prevent data loss.
+
+			</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
+		<PackageTags>File include readme MD</PackageTags>
+		<PackageReleaseNotes>Added github source code URL.</PackageReleaseNotes>
+		<Company>OROptimizer</Company>
+		<Authors>Artak Hakobyan</Authors>
+		<Version>1.0.1</Version>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Include="ErrorType.cs" />
+	  <Compile Include="Helpers.cs" />
+	  <Compile Include="IErrorData.cs" />
+	  <Compile Include="ITemplateProcessor.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+</Project>
