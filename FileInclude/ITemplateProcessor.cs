@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Text;
+using OROptimizer.Utilities;
 
 namespace FileInclude
 {
@@ -68,6 +69,9 @@ namespace FileInclude
         IReadOnlyList<IErrorData> GenerateFileFromTemplate(string templateFilePath, out string generatedFileContents);
     }
 
+    /// <summary>
+    /// Extensions for <see cref="ITemplateProcessor"/>
+    /// </summary>
     public static class TemplateProcessorExtensions
     {
         /// <summary>
@@ -94,18 +98,20 @@ namespace FileInclude
 
             var templateFileFolderPath = Path.GetDirectoryName(templateFilePath)!;
 
-            if (!Helpers.TryGetAbsoluteFilePath(templateFileFolderPath, generatedFilePath, out var generatedFileAbsolutePath, out var errorMessage))
-            {
-                if (errorMessage == null)
-                    errorMessage = $"Could not calculate absolute file path from parameters '{nameof(templateFilePath)}' and '{nameof(generatedFilePath)}' passed to method '{typeof(TemplateProcessorExtensions).FullName}.{nameof(GenerateFileFromTemplateAndSave)}'.";
+            var absoluteFilePathData = FilePathHelpers.TryGetAbsoluteFilePath(templateFileFolderPath, generatedFilePath);
 
-                errors.Add(new ErrorData(ErrorCode.CouldNotCalculateAbsoluteFilePath, errorMessage, generatedFilePath));
+            if (!absoluteFilePathData.isSuccess)
+            {
+                if (absoluteFilePathData.errorMessage == null)
+                    absoluteFilePathData.errorMessage = $"Could not calculate absolute file path from parameters '{nameof(templateFilePath)}' and '{nameof(generatedFilePath)}' passed to method '{typeof(TemplateProcessorExtensions).FullName}.{nameof(GenerateFileFromTemplateAndSave)}'.";
+
+                errors.Add(new ErrorData(ErrorCode.CouldNotCalculateAbsoluteFilePath, absoluteFilePathData.errorMessage, generatedFilePath));
                 return errors;
             }
 
             try
             {
-                if (Directory.Exists(generatedFileAbsolutePath))
+                if (Directory.Exists(absoluteFilePathData.absoluteFilePath))
                 {
                     errors.Add(new ErrorData(ErrorCode.CouldNotCalculateAbsoluteFilePath,
                         $"Absolute file path calculated from parameters '{nameof(templateFilePath)}' and '{nameof(generatedFilePath)}' passed to method '{typeof(TemplateProcessorExtensions).FullName}.{nameof(GenerateFileFromTemplateAndSave)}' is a directory. Expected a file.", generatedFilePath));
@@ -118,13 +124,13 @@ namespace FileInclude
                 return errors;
             }
 
-            if (generatedFileAbsolutePath == null)
+            if (absoluteFilePathData.absoluteFilePath == null)
             {
                 errors.Add(new ErrorData(ErrorCode.FileDoesNotExist, "Implementation error.", generatedFilePath));
                 return errors;
             }
 
-            if (string.Equals(templateFilePath, generatedFileAbsolutePath, StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(templateFilePath, absoluteFilePathData.absoluteFilePath, StringComparison.InvariantCultureIgnoreCase))
             {
                 errors.Add(new ErrorData(ErrorCode.TemplateFilePathIsTheSameAsGeneratedFilePath,
                     $"The template file path in parameter '{nameof(templateFilePath)}' of method '{typeof(TemplateProcessorExtensions).FullName}.{nameof(GenerateFileFromTemplateAndSave)}' matches the path of the file to be generated from the template. Make sure the values of parameters '{nameof(templateFilePath)}' and '{nameof(generatedFilePath)}' are correct.",
@@ -132,21 +138,21 @@ namespace FileInclude
                 return errors;
             }
 
-            string fileModificationDataFilePath = $"{generatedFileAbsolutePath}.generationdata";
+            string fileModificationDataFilePath = $"{absoluteFilePathData.absoluteFilePath}.generationdata";
 
             const string lastModifiedDateParamName = "LastModifiedDate";
 
             try
             {
-                if (File.Exists(generatedFileAbsolutePath))
+                if (File.Exists(absoluteFilePathData.absoluteFilePath))
                 {
                     string GetFileWasModifiedErrorMessage() =>
-                        $"File '{generatedFileAbsolutePath}' was modified by other application. Please backup the file, then rename or delete it and try again.";
+                        $"File '{absoluteFilePathData.absoluteFilePath}' was modified by other application. Please backup the file, then rename or delete it and try again.";
 
                     if (!File.Exists(fileModificationDataFilePath))
                     {
                         errors.Add(new ErrorData(ErrorCode.FileGeneratedFromTemplateWasModifiedAfterLastGeneration,
-                            GetFileWasModifiedErrorMessage(), generatedFileAbsolutePath));
+                            GetFileWasModifiedErrorMessage(), absoluteFilePathData.absoluteFilePath));
                         return errors;
                     }
 
@@ -170,10 +176,10 @@ namespace FileInclude
                             }
                         }
 
-                        if (lastGenerationDate == null || lastGenerationDate.Value != new FileInfo(generatedFileAbsolutePath).LastWriteTimeUtc.Ticks)
+                        if (lastGenerationDate == null || lastGenerationDate.Value != new FileInfo(absoluteFilePathData.absoluteFilePath).LastWriteTimeUtc.Ticks)
                         {
                             errors.Add(new ErrorData(ErrorCode.FileGeneratedFromTemplateWasModifiedAfterLastGeneration,
-                                GetFileWasModifiedErrorMessage(), generatedFileAbsolutePath));
+                                GetFileWasModifiedErrorMessage(), absoluteFilePathData.absoluteFilePath));
                             return errors;
                         }
                     }
@@ -181,7 +187,7 @@ namespace FileInclude
             }
             catch (Exception ex)
             {
-                errors.Add(new ErrorData(ErrorCode.FileGeneratedFromTemplateWasModifiedAfterLastGeneration, ex, generatedFileAbsolutePath));
+                errors.Add(new ErrorData(ErrorCode.FileGeneratedFromTemplateWasModifiedAfterLastGeneration, ex, absoluteFilePathData.absoluteFilePath));
                 return errors;
             }
 
@@ -189,17 +195,17 @@ namespace FileInclude
             {
                 errors.AddRange(templateProcessor.GenerateFileFromTemplate(templateFilePath, out var generatedFileContents));
 
-                using (var streamWriter = new StreamWriter(generatedFileAbsolutePath, false))
+                using (var streamWriter = new StreamWriter(absoluteFilePathData.absoluteFilePath, false))
                     streamWriter.Write(generatedFileContents);
 
                 try
                 {
                     using (var saveDataStreamWriter = new StreamWriter(fileModificationDataFilePath, false))
-                        saveDataStreamWriter.Write($"{lastModifiedDateParamName}:{ new FileInfo(generatedFileAbsolutePath).LastWriteTimeUtc.Ticks}");
+                        saveDataStreamWriter.Write($"{lastModifiedDateParamName}:{ new FileInfo(absoluteFilePathData.absoluteFilePath).LastWriteTimeUtc.Ticks}");
                 }
                 catch (Exception ex2)
                 {
-                    errors.Add(new ErrorData(ErrorCode.FailedToSaveFileGenerationData, ex2, generatedFileAbsolutePath));
+                    errors.Add(new ErrorData(ErrorCode.FailedToSaveFileGenerationData, ex2, absoluteFilePathData.absoluteFilePath));
                     return errors;
                 }
 
@@ -207,7 +213,7 @@ namespace FileInclude
             }
             catch (Exception ex)
             {
-                errors.Add(new ErrorData(ErrorCode.FailedToSaveFileGeneratedFromTemplate, ex, generatedFileAbsolutePath));
+                errors.Add(new ErrorData(ErrorCode.FailedToSaveFileGeneratedFromTemplate, ex, absoluteFilePathData.absoluteFilePath));
             }
 
             return errors;
@@ -217,6 +223,7 @@ namespace FileInclude
     /// <inheritdoc />
     public class TemplateProcessor : ITemplateProcessor
     {
+        /// <inheritdoc />
         public IReadOnlyList<IErrorData> GenerateFileFromTemplate(string templateFilePath, out string generatedText)
         {
             var errors = new List<IErrorData>();
@@ -353,23 +360,26 @@ namespace FileInclude
 
                     var folderPath = Path.GetDirectoryName(templateFilePath)!;
 
-                    if (Helpers.TryGetAbsoluteFilePath(folderPath, includedTemplateRelativePath,
-                            out var includedTemplateAbsoluteFilePath, out var calculateAbsolutePathErrorMessage))
+                    var absoluteFilePathData =
+                        FilePathHelpers.TryGetAbsoluteFilePath(folderPath, includedTemplateRelativePath);
+
+
+                    if (absoluteFilePathData.isSuccess)
                     {
-                        if (includedTemplateAbsoluteFilePath != null)
+                        if (absoluteFilePathData.absoluteFilePath != null)
                         {
                             try
                             {
-                                if (!Directory.Exists(includedTemplateAbsoluteFilePath))
+                                if (!Directory.Exists(absoluteFilePathData.absoluteFilePath))
                                 {
                                     var indexOfFileInVisitedFiles = visitedFilePaths.FindLastIndex(x =>
-                                        string.Equals(x, includedTemplateAbsoluteFilePath, StringComparison.InvariantCultureIgnoreCase));
+                                        string.Equals(x, absoluteFilePathData.absoluteFilePath, StringComparison.InvariantCultureIgnoreCase));
 
                                     if (indexOfFileInVisitedFiles < 0)
                                     {
-                                        if (TryLoadFile(includedTemplateAbsoluteFilePath, out var referencedFileContents, out Exception? loadReferencedFileException, out string? loadReferencedFileErrorMessage, out var errorCode))
+                                        if (TryLoadFile(absoluteFilePathData.absoluteFilePath, out var referencedFileContents, out Exception? loadReferencedFileException, out string? loadReferencedFileErrorMessage, out var errorCode))
                                         {
-                                            this.TryGenerate(includedTemplateAbsoluteFilePath, referencedFileContents ?? String.Empty, visitedFilePaths, errors, out var referencedTemplateText);
+                                            this.TryGenerate(absoluteFilePathData.absoluteFilePath, referencedFileContents ?? String.Empty, visitedFilePaths, errors, out var referencedTemplateText);
                                             generatedTextStrBldr.Append(referencedTemplateText);
                                         }
                                         else
@@ -389,7 +399,7 @@ namespace FileInclude
 
 
                                             errors.Add(new ErrorData(ErrorCode.FailedToLoadReferencedFile,
-                                                $"Failed to load the referenced file '{includedTemplateAbsoluteFilePath}' specified as '{includedTemplateRelativePath}' in element '{FileIncludeTagName}'.", templateFilePath)
+                                                $"Failed to load the referenced file '{absoluteFilePathData.absoluteFilePath}' specified as '{includedTemplateRelativePath}' in element '{FileIncludeTagName}'.", templateFilePath)
                                             {
                                                 ErrorPosition = filePathPosition
                                             });
@@ -409,10 +419,10 @@ namespace FileInclude
                                         // File1=>File2=>File3=>File2
                                         var circularReferenceErrorMessageStrBldr = new StringBuilder();
 
-                                        circularReferenceErrorMessageStrBldr.AppendLine($"File '{includedTemplateAbsoluteFilePath}' referenced from '{visitedFilePaths.Last()}' results in the following circular references:");
+                                        circularReferenceErrorMessageStrBldr.AppendLine($"File '{absoluteFilePathData.absoluteFilePath}' referenced from '{visitedFilePaths.Last()}' results in the following circular references:");
 
                                         var circularReferencesList = new List<string>(visitedFilePaths.TakeLast(visitedFilePaths.Count - indexOfFileInVisitedFiles));
-                                        circularReferencesList.Add(includedTemplateAbsoluteFilePath);
+                                        circularReferencesList.Add(absoluteFilePathData.absoluteFilePath);
 
                                         for (var i = 0; i < circularReferencesList.Count - 1; ++i)
                                             circularReferenceErrorMessageStrBldr.AppendLine($"\tFile '{circularReferencesList[i]}' references '{circularReferencesList[i + 1]}'");
@@ -457,7 +467,7 @@ namespace FileInclude
                     else
                     {
                         errors.Add(new ErrorData(ErrorCode.CouldNotCalculateAbsoluteFilePath,
-                            $"Failed to calculate absolute file path from path '{includedTemplateRelativePath}'. Original error: {calculateAbsolutePathErrorMessage}", templateFilePath)
+                            $"Failed to calculate absolute file path from path '{includedTemplateRelativePath}'. Original error: {absoluteFilePathData.absoluteFilePath}", templateFilePath)
                         {
                             ErrorPosition = filePathPosition
                         });

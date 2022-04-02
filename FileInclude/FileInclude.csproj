@@ -26,18 +26,18 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
 		<PackageTags>File include readme MD</PackageTags>
-		<PackageReleaseNotes>Added github source code URL.</PackageReleaseNotes>
+		<PackageReleaseNotes>Turned on code docs.</PackageReleaseNotes>
 		<Company>OROptimizer</Company>
 		<Authors>Artak Hakobyan</Authors>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 	  <Compile Include="ErrorType.cs" />
-	  <Compile Include="Helpers.cs" />
 	  <Compile Include="IErrorData.cs" />
 	  <Compile Include="ITemplateProcessor.cs" />
 	</ItemGroup>
@@ -47,5 +47,9 @@
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\OROptimizer.Shared\OROptimizer.Shared\OROptimizer.Shared.csproj" />
 	</ItemGroup>
 </Project>
