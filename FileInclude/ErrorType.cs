@@ -23,68 +23,67 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace FileInclude
+namespace FileInclude;
+
+/// <summary>
+/// Error type.
+/// </summary>
+public enum ErrorCode
 {
     /// <summary>
-    /// Error type.
+    /// Absolute file path could not be calculated.
     /// </summary>
-    public enum ErrorCode
-    {
-        /// <summary>
-        /// Absolute file path could not be calculated.
-        /// </summary>
-        CouldNotCalculateAbsoluteFilePath,
+    CouldNotCalculateAbsoluteFilePath,
 
-        /// <summary>
-        /// File does not exist.
-        /// </summary>
-        FileDoesNotExist,
+    /// <summary>
+    /// File does not exist.
+    /// </summary>
+    FileDoesNotExist,
 
-        /// <summary>
-        /// File failed to load.
-        /// </summary>
-        FileFailedToLoad,
+    /// <summary>
+    /// File failed to load.
+    /// </summary>
+    FileFailedToLoad,
 
-        /// <summary>
-        /// File referenced in element "ReadMeInclude" failed to load.
-        /// </summary>
-        FailedToLoadReferencedFile,
+    /// <summary>
+    /// File referenced in element "ReadMeInclude" failed to load.
+    /// </summary>
+    FailedToLoadReferencedFile,
 
-        /// <summary>
-        /// Template file path is the same as the file path where generated file is saved.
-        /// </summary>
-        TemplateFilePathIsTheSameAsGeneratedFilePath,
+    /// <summary>
+    /// Template file path is the same as the file path where generated file is saved.
+    /// </summary>
+    TemplateFilePathIsTheSameAsGeneratedFilePath,
 
-        /// <summary>
-        /// The file specified in element in element "ReadMeInclude" in template file references the template file where it is specified.
-        /// </summary>
-        TemplateFileReferencesItself,
+    /// <summary>
+    /// The file specified in element in element "ReadMeInclude" in template file references the template file where it is specified.
+    /// </summary>
+    TemplateFileReferencesItself,
 
-        /// <summary>
-        /// The file specified in element in element "ReadMeInclude" results in circular references.
-        /// </summary>
-        CircularReferences,
+    /// <summary>
+    /// The file specified in element in element "ReadMeInclude" results in circular references.
+    /// </summary>
+    CircularReferences,
 
-        /// <summary>
-        /// Failed to save file generated from template.
-        /// </summary>
-        FailedToSaveFileGeneratedFromTemplate,
+    /// <summary>
+    /// Failed to save file generated from template.
+    /// </summary>
+    FailedToSaveFileGeneratedFromTemplate,
 
-        /// <summary>
-        /// Template file has an opening tag "ReadMeInclude" but does not have a closing tag.
-        /// </summary>
-        ClosingTagMissing,
+    /// <summary>
+    /// Template file has an opening tag "ReadMeInclude" but does not have a closing tag.
+    /// </summary>
+    ClosingTagMissing,
 
-        /// <summary>
-        /// Error reported when a change to the generated file is detected which was not done by this library (most probably manual edit).
-        /// In this case, the file should be backed up and renamed or deleted, so that the 
-        /// </summary>
-        FileGeneratedFromTemplateWasModifiedAfterLastGeneration,
+    /// <summary>
+    /// Error reported when a change to the generated file is detected which was not done by this library (most probably manual edit).
+    /// In this case, the file should be backed up and renamed or deleted, so that the 
+    /// </summary>
+    FileGeneratedFromTemplateWasModifiedAfterLastGeneration,
 
-        /// <summary>
-        /// This error happens when the file generated from template is saved, however data about generation fails to save.
-        /// This is not a critical error, since by the time this error happens, the file is saved.
-        /// </summary>
-        FailedToSaveFileGenerationData
-    }
+    /// <summary>
+    /// This error happens when the file generated from template is saved, however data about generation fails to save.
+    /// This is not a critical error, since by the time this error happens, the file is saved.
+    /// </summary>
+    FailedToSaveFileGenerationData
 }

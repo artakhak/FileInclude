@@ -23,62 +23,61 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace FileInclude
+namespace FileInclude;
+
+/// <summary>
+/// Error data.
+/// </summary>
+public interface IErrorData
 {
     /// <summary>
-    /// Error data.
+    /// Error code.
     /// </summary>
-    public interface IErrorData
+    ErrorCode ErrorCode { get; }
+
+    /// <summary>
+    /// Error message.
+    /// </summary>
+    string ErrorMessage { get; }
+
+    /// <summary>
+    /// If the value is not null, thrown exception.
+    /// </summary>
+    Exception? Exception { get; }
+
+    /// <summary>
+    /// Absolute file path that caused the error.
+    /// </summary>
+    string SourceFilePath { get; }
+
+    /// <summary>
+    /// Error position in file <see cref="SourceFilePath"/>.
+    /// The value is null if the file was not loaded (i.e., the file  does not exist, etc.).
+    /// </summary>
+    int? ErrorPosition { get; }
+}
+
+/// <inheritdoc />
+internal class ErrorData : IErrorData
+{
+    public ErrorData(ErrorCode errorCode, string errorMessage, string sourceFilePath)
     {
-        /// <summary>
-        /// Error code.
-        /// </summary>
-        ErrorCode ErrorCode { get; }
-
-        /// <summary>
-        /// Error message.
-        /// </summary>
-        string ErrorMessage { get; }
-
-        /// <summary>
-        /// If the value is not null, thrown exception.
-        /// </summary>
-        Exception? Exception { get; }
-
-        /// <summary>
-        /// Absolute file path that caused the error.
-        /// </summary>
-        string SourceFilePath { get; }
-
-        /// <summary>
-        /// Error position in file <see cref="SourceFilePath"/>.
-        /// The value is null if the file was not loaded (i.e., the file  does not exist, etc.).
-        /// </summary>
-        int? ErrorPosition { get; }
+        ErrorCode = errorCode;
+        ErrorMessage = errorMessage;
+        SourceFilePath = sourceFilePath;
     }
 
-    /// <inheritdoc />
-    internal class ErrorData : IErrorData
+    public ErrorData(ErrorCode errorCode, Exception exception, string sourceFilePath)
     {
-        public ErrorData(ErrorCode errorCode, string errorMessage, string sourceFilePath)
-        {
-            ErrorCode = errorCode;
-            ErrorMessage = errorMessage;
-            SourceFilePath = sourceFilePath;
-        }
-
-        public ErrorData(ErrorCode errorCode, Exception exception, string sourceFilePath)
-        {
-            ErrorCode = errorCode;
-            Exception = exception;
-            SourceFilePath = sourceFilePath;
-            ErrorMessage = exception.Message;
-        }
-
-        public ErrorCode ErrorCode { get; }
-        public string ErrorMessage { get; }
-        public Exception? Exception { get; }
-        public string SourceFilePath { get; }
-        public int? ErrorPosition { get; set; }
+        ErrorCode = errorCode;
+        Exception = exception;
+        SourceFilePath = sourceFilePath;
+        ErrorMessage = exception.Message;
     }
+
+    public ErrorCode ErrorCode { get; }
+    public string ErrorMessage { get; }
+    public Exception? Exception { get; }
+    public string SourceFilePath { get; }
+    public int? ErrorPosition { get; set; }
 }

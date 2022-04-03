@@ -26,10 +26,14 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
 		<PackageTags>File include readme MD</PackageTags>
-		<PackageReleaseNotes>Turned on code docs.</PackageReleaseNotes>
+		<PackageReleaseNotes>
+			Added overloaded methods that take a parameter of type FileInclude.IReplacedTextTransformer to do transformation on replaced files in templates if necessary.
+			Also, added two implementations of FileInclude.IReplacedTextTransformer: FileInclude.IndentedReplacedTextTransformer and FileInclude.NoTransformationReplacedTextTransformer.
+			If the overload of FileInclude.ITemplateProcessor.GenerateFileFromTemplate(string templateFilePath, out string generatedFileContents) is used (the overload without FileInclude.IReplacedTextTransformer parameter), then the parameter defaults to an instance of FileInclude.IndentedReplacedTextTransformer, since this is the most common expected transformer we would like to use to indent the included files.
+		</PackageReleaseNotes>
 		<Company>OROptimizer</Company>
 		<Authors>Artak Hakobyan</Authors>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>
@@ -39,7 +43,11 @@
 	<ItemGroup>
 	  <Compile Include="ErrorType.cs" />
 	  <Compile Include="IErrorData.cs" />
+	  <Compile Include="NoTransformationReplacedTextTransformer.cs" />
+	  <Compile Include="IndentedReplacedTextTransformer.cs" />
+	  <Compile Include="IReplacedTextTransformer.cs" />
 	  <Compile Include="ITemplateProcessor.cs" />
+	  <Compile Include="TemplateProcessor.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
