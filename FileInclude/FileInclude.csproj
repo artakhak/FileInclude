@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -27,13 +27,11 @@
 		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
 		<PackageTags>File include readme MD</PackageTags>
 		<PackageReleaseNotes>
-			Added overloaded methods that take a parameter of type FileInclude.IReplacedTextTransformer to do transformation on replaced files in templates if necessary.
-			Also, added two implementations of FileInclude.IReplacedTextTransformer: FileInclude.IndentedReplacedTextTransformer and FileInclude.NoTransformationReplacedTextTransformer.
-			If the overload of FileInclude.ITemplateProcessor.GenerateFileFromTemplate(string templateFilePath, out string generatedFileContents) is used (the overload without FileInclude.IReplacedTextTransformer parameter), then the parameter defaults to an instance of FileInclude.IndentedReplacedTextTransformer, since this is the most common expected transformer we would like to use to indent the included files.
+			Changed the dependency from OROptimizer.Shared to version 2.1.1, since a small bug was fixed in OROptimizer.Shared 2.1.1 to fix incorrect relative path calculation in template files. 
 		</PackageReleaseNotes>
 		<Company>OROptimizer</Company>
 		<Authors>Artak Hakobyan</Authors>
-		<Version>1.0.3</Version>
+		<Version>1.0.4</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>
@@ -51,13 +49,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="OROptimizer.Shared " Version="2.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="..\README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\OROptimizer.Shared\OROptimizer.Shared\OROptimizer.Shared.csproj" />
 	</ItemGroup>
 </Project>
