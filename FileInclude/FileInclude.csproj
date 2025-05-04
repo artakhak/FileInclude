@@ -1,10 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-
 		<EnableDefaultItems>false</EnableDefaultItems>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Description>
@@ -22,40 +20,42 @@
 
 			There is also an extension method FileInclude.TemplateProcessorExtensions.GenerateFileFromTemplateAndSave which saves the file generated from the template. The extension method checks if the generated file was modified by other applications (say manually edited) since it was auto-generated last time, to prevent data loss.
 
-			</Description>
+		</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
 		<PackageTags>File include readme MD</PackageTags>
 		<PackageReleaseNotes>
-			Changed the dependency from OROptimizer.Shared to version 2.1.1, since a small bug was fixed in OROptimizer.Shared 2.1.1 to fix incorrect relative path calculation in template files. 
+			Referencing latest version of OROptimizer.Shared
 		</PackageReleaseNotes>
 		<Company>OROptimizer</Company>
 		<Authors>Artak Hakobyan</Authors>
-		<Version>1.0.4</Version>
+		<PackageVersion>1.0.5</PackageVersion>
+		<Version>1.0.5</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
-
 	<ItemGroup>
-	  <Compile Include="ErrorType.cs" />
-	  <Compile Include="IErrorData.cs" />
-	  <Compile Include="NoTransformationReplacedTextTransformer.cs" />
-	  <Compile Include="IndentedReplacedTextTransformer.cs" />
-	  <Compile Include="IReplacedTextTransformer.cs" />
-	  <Compile Include="ITemplateProcessor.cs" />
-	  <Compile Include="TemplateProcessor.cs" />
+		<Compile Include="ErrorType.cs" />
+		<Compile Include="IErrorData.cs" />
+		<Compile Include="NoTransformationReplacedTextTransformer.cs" />
+		<Compile Include="IndentedReplacedTextTransformer.cs" />
+		<Compile Include="IReplacedTextTransformer.cs" />
+		<Compile Include="ITemplateProcessor.cs" />
+		<Compile Include="TemplateProcessor.cs" />
 	</ItemGroup>
-
 	<ItemGroup>
-		<PackageReference Include="OROptimizer.Shared " Version="2.1.1" />
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
-
 	<ItemGroup>
-	  <None Include="..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+	  <PackageReference Include="OROptimizer.Shared" Version="2.2.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<!--<ProjectReference Include="..\..\OROptimizer.Shared\OROptimizer.Shared\OROptimizer.Shared.csproj" />-->
 	</ItemGroup>
 </Project>
