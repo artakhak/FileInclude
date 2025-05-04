@@ -1,5 +1,5 @@
-﻿// This software is part of the ExtendibleTreeStructure library
-// Copyright © 2018 ExtendibleTreeStructure Contributors
+﻿// This software is part of the FileInclude library
+// Copyright © 2018 FileInclude Contributors
 // http://oroptimizer.com
 //
 // Permission is hereby granted, free of charge, to any person
