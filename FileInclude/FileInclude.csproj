@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -25,12 +25,12 @@
 		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
 		<PackageTags>File include readme MD</PackageTags>
 		<PackageReleaseNotes>
-			Referencing latest version of OROptimizer.Shared
+			A small change to create folders of generated files if folders do not exist
 		</PackageReleaseNotes>
 		<Company>OROptimizer</Company>
 		<Authors>Artak Hakobyan</Authors>
-		<PackageVersion>1.0.5</PackageVersion>
-		<Version>1.0.5</Version>
+		<PackageVersion>1.1.0</PackageVersion>
+		<Version>1.1.0</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>
@@ -53,9 +53,8 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="OROptimizer.Shared" Version="2.2.0" />
+	  <PackageReference Include="OROptimizer.Shared" Version="2.5.0" />
+	  <!--<ProjectReference Include="..\..\OROptimizer.Shared\OROptimizer.Shared\OROptimizer.Shared.csproj" />-->
 	</ItemGroup>
-	<ItemGroup>
-		<!--<ProjectReference Include="..\..\OROptimizer.Shared\OROptimizer.Shared\OROptimizer.Shared.csproj" />-->
-	</ItemGroup>
+	
 </Project>

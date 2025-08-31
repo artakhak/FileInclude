@@ -147,6 +147,22 @@ public static class TemplateProcessorExtensions
                     $"Absolute file path calculated from parameters '{nameof(templateFilePath)}' and '{nameof(generatedFilePath)}' passed to method '{typeof(TemplateProcessorExtensions).FullName}.{nameof(GenerateFileFromTemplateAndSave)}' is a directory. Expected a file.", generatedFilePath));
                 return errors;
             }
+
+            var targetDirectory = Path.GetDirectoryName(absoluteFilePathData.absoluteFilePath);
+
+            if (targetDirectory == null)
+            {
+                // We should not get here.
+                errors.Add(new ErrorData(ErrorCode.CouldNotCalculateAbsoluteFilePath,
+                    $"Failed to retrieve target directory from '{absoluteFilePathData.absoluteFilePath}'. {nameof(templateFileFolderPath)}: '{templateFileFolderPath}', {nameof(generatedFilePath)}: '{generatedFilePath}'.", generatedFilePath));
+                return errors;
+            }
+                
+            if (!Directory.Exists(targetDirectory))
+            {
+                // if the directory does not exist, lets create it.
+                Directory.CreateDirectory(targetDirectory);
+            }
         }
         catch (Exception e)
         {
@@ -225,6 +241,13 @@ public static class TemplateProcessorExtensions
         {
             errors.AddRange(templateProcessor.GenerateFileFromTemplate(templateFilePath, replacedTextTransformer??new IndentedReplacedTextTransformer(), out var generatedFileContents));
 
+            // TODO: Create the folder if it does not exist.
+            //var folderPath = Path.GetDirectoryName(absoluteFilePathData.absoluteFilePath);
+
+            //if (folderPath == null)
+            //    throw new 
+
+            //if (System.IO.Directory.Exists())
             using (var streamWriter = new StreamWriter(absoluteFilePathData.absoluteFilePath, false))
                 streamWriter.Write(generatedFileContents);
 
