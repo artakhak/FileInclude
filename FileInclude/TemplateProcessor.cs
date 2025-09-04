@@ -269,7 +269,6 @@ public class TemplateProcessor : ITemplateProcessor
                             {
                                 ErrorPosition = filePathPosition
                             });
-
                         }
                     }
                     else

@@ -25,12 +25,13 @@
 		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
 		<PackageTags>File include readme MD</PackageTags>
 		<PackageReleaseNotes>
-			A small change to create folders of generated files if folders do not exist
+			A small change to allow including also files that do not have ".template" extension.
+            These files will be copied as is without being treated as a template
 		</PackageReleaseNotes>
 		<Company>OROptimizer</Company>
 		<Authors>Artak Hakobyan</Authors>
-		<PackageVersion>1.1.0</PackageVersion>
-		<Version>1.1.0</Version>
+		<PackageVersion>1.2.0</PackageVersion>
+		<Version>1.2.0</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>

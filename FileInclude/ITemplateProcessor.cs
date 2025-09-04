@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using OROptimizer.Diagnostics.Log;
 using OROptimizer.Utilities;
 
 namespace FileInclude;
@@ -100,6 +101,8 @@ public interface ITemplateProcessor
 /// </summary>
 public static class TemplateProcessorExtensions
 {
+    private const string TemplateExtension = ".template";
+
     /// <summary>
     /// Extension method for <see cref="ITemplateProcessor"/> that generates a file from template specified in <paramref name="templateFilePath"/> using
     /// <see cref="ITemplateProcessor.GenerateFileFromTemplate(string, out string)"/> and saves the generated file to file specified in parameter <paramref name="generatedFilePath"/>. 
@@ -239,22 +242,25 @@ public static class TemplateProcessorExtensions
 
         try
         {
-            errors.AddRange(templateProcessor.GenerateFileFromTemplate(templateFilePath, replacedTextTransformer??new IndentedReplacedTextTransformer(), out var generatedFileContents));
+            if (!templateFilePath.EndsWith(TemplateExtension))
+            {
+                LogHelper.Context.Log.InfoFormat("File [{0}] does not have an extension '{1}' and will be copied to '{2}' as is to destination directory without treating the file as a template.",
+                    templateFilePath, TemplateExtension, generatedFilePath);
 
-            // TODO: Create the folder if it does not exist.
-            //var folderPath = Path.GetDirectoryName(absoluteFilePathData.absoluteFilePath);
+                File.Copy(templateFilePath, generatedFilePath, true);
+            }
+            else
+            {
+                errors.AddRange(templateProcessor.GenerateFileFromTemplate(templateFilePath, replacedTextTransformer ?? new IndentedReplacedTextTransformer(), out var generatedFileContents));
 
-            //if (folderPath == null)
-            //    throw new 
-
-            //if (System.IO.Directory.Exists())
-            using (var streamWriter = new StreamWriter(absoluteFilePathData.absoluteFilePath, false))
-                streamWriter.Write(generatedFileContents);
+                using (var streamWriter = new StreamWriter(absoluteFilePathData.absoluteFilePath, false))
+                    streamWriter.Write(generatedFileContents);
+            }
 
             try
             {
                 using (var saveDataStreamWriter = new StreamWriter(fileModificationDataFilePath, false))
-                    saveDataStreamWriter.Write($"{lastModifiedDateParamName}:{ new FileInfo(absoluteFilePathData.absoluteFilePath).LastWriteTimeUtc.Ticks}");
+                    saveDataStreamWriter.Write($"{lastModifiedDateParamName}:{new FileInfo(absoluteFilePathData.absoluteFilePath).LastWriteTimeUtc.Ticks}");
             }
             catch (Exception ex2)
             {
