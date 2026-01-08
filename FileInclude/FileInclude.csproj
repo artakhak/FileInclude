@@ -25,13 +25,12 @@
 		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
 		<PackageTags>File include readme MD</PackageTags>
 		<PackageReleaseNotes>
-			A small change to allow including also files that do not have ".template" extension.
-            These files will be copied as is without being treated as a template
+			Referencing the latest version of OROptimizer.Shared (V2.7.0)
 		</PackageReleaseNotes>
 		<Company>OROptimizer</Company>
 		<Authors>Artak Hakobyan</Authors>
-		<PackageVersion>1.2.0</PackageVersion>
-		<Version>1.2.0</Version>
+		<PackageVersion>1.3.0</PackageVersion>
+		<Version>1.3.0</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>
@@ -54,7 +53,7 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="OROptimizer.Shared" Version="2.5.0" />
+	  <PackageReference Include="OROptimizer.Shared" Version="2.7.0" />
 	  <!--<ProjectReference Include="..\..\OROptimizer.Shared\OROptimizer.Shared\OROptimizer.Shared.csproj" />-->
 	</ItemGroup>
 	
