@@ -24,13 +24,16 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Copyright>Copyright 2022 (c) OROptimizer. All rights reserved.</Copyright>
 		<PackageTags>File include readme MD</PackageTags>
-		<PackageReleaseNotes>
-			Referencing the latest version of OROptimizer.Shared (V2.7.0)
-		</PackageReleaseNotes>
 		<Company>OROptimizer</Company>
 		<Authors>Artak Hakobyan</Authors>
-		<PackageVersion>1.3.0</PackageVersion>
-		<Version>1.3.0</Version>
+		<PackageVersion>1.3.1</PackageVersion>
+		<Version>1.3.1</Version>
+		
+		<PackageReleaseNotes>
+			- Referencing OROptimizer.Shared V2.7.1
+			- Couple of minor changes in project file
+		</PackageReleaseNotes>
+		
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/artakhak/FileInclude</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/artakhak/FileInclude</RepositoryUrl>
@@ -52,9 +55,13 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-	<ItemGroup>
-	  <PackageReference Include="OROptimizer.Shared" Version="2.7.0" />
-	  <!--<ProjectReference Include="..\..\OROptimizer.Shared\OROptimizer.Shared\OROptimizer.Shared.csproj" />-->
+
+	<!--OROptimizer.Shared-->
+	<ItemGroup Condition="'$(Configuration)'=='Release' Or !$(DefineConstants.Contains('REFERENCE_OROptimizer_Shared_PROJECT'))">
+		<PackageReference Include="OROptimizer.Shared" Version="2.7.1" />
 	</ItemGroup>
-	
+
+	<ItemGroup Condition="'$(Configuration)'=='Debug' And $(DefineConstants.Contains('REFERENCE_OROptimizer_Shared_PROJECT'))">
+		<ProjectReference Include="..\..\OROptimizer.Shared\OROptimizer.Shared\OROptimizer.Shared.csproj" />
+	</ItemGroup>
 </Project>
